@@ -1,0 +1,57 @@
+number = 12
+
+import math
+
+def divisorGenerator(n):
+    large_divisors = []
+    for i in range(1, int(math.sqrt(n) + 1)):
+        if n % i == 0:
+            yield i
+            if i*i != n:
+                large_divisors.append(n / i)
+    for divisor in reversed(large_divisors):
+        yield int(divisor)
+
+voters = list(divisorGenerator(number))
+
+quota = sum(voters)/2
+
+        
+voter_score = [0]*len(voters)
+
+subsets = [[]]*(2**len(voters))
+
+def powerset(s):
+    subsets=[]
+    x = len(s)
+    for i in range(1 << x):
+        subsets.append([s[j] for j in range(x) if (i & (1 << j))])
+    return subsets
+
+subsets = powerset(voters)
+coalitions = []
+
+for s in subsets:
+    if sum(s)>quota:
+        coalitions.append(s)
+print(coalitions)
+
+criticals=[]
+
+for c in coalitions:
+    for i in range(len(c)):
+        r=c[i]
+        c.pop(i)
+        if sum(c)<=quota:
+            criticals.append(r)
+        c.insert(i,r)
+
+print(criticals)
+
+for i in range(len(voters)):
+    for j in range(len(criticals)):
+        if criticals[j] == voters[i]:
+            voter_score[i]+=1
+voter_score = [str(voter_score[i])+"/"+str(len(criticals)) for i in range(len(voter_score))]
+print(voter_score)
+
