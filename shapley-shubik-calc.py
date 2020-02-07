@@ -79,7 +79,7 @@ def fixedPoint(power):
     if new_list[0] == old_list:
         print("FIXED POINT: ", new_list[0])
     else: 
-        fixedPoint(new_list[1])
+        fixedPoint(new_list[0])
     
 test = [1,2,3,4,5]
 fixedPoint(test)
