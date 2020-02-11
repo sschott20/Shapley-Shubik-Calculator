@@ -99,32 +99,26 @@ def ShapleyShubikFast(voters):
         # print('New iteration: ', j)
         # print(permutations)
         runningSum = 0
-
+        a = j
+        done = False
         for i in range(numPlayers):
             # print("i: ",i)
-            # print(j,i,permutations[j])
             runningSum += permutations[j][i][1]
             # print(runningSum)
             if runningSum > quota:
-                
+                # print(j,i, quota, runningSum, permutations[j])
+
                 numInconsequential = numPlayers - 1 - i 
             
                 numInconsequentialFactorial = factorial(numInconsequential)
-                # print(i,j,permutations[j], numInconsequential)
+                
                 votingPower[permutations[j][i][0] - 1][2] += numInconsequentialFactorial
-                
-                # j += numInconsequentialFactorial
-                # if j > len(permutations):
-                #     print(j, len(permutations))
-                #     j = len(permutations)
-                
-                # check = permutations[j][:i]                
-                # if permutations[j+1][:i] == check:
-                #     print('SECCOND')
-                #     votingPower[permutations[j][i][0] - 1][2] += 1
-                #     j+=1
-                # else: 
-                #     break
+                a = j + numInconsequentialFactorial + 1
+                print(j,a,i, quota, runningSum, permutations[j], numInconsequential)
+                done = True
+            if done:
+                break
+        j = a
                 
     powerFractions = []
     for power in votingPower:
@@ -176,10 +170,10 @@ def fixedPoint(power):
 # permutationTest([1,2,3,4,5,6,7])
 
 
-for i in range(1):
-    print(i)
+for i in range(2,3):
+    # print(i)
     test = [i, i+1, i+2,i+3,i+4,i+5]
-    ShapleyShubik(test)
+    # ShapleyShubik(test)
     ShapleyShubikFast(test)
     print("\n")
 
