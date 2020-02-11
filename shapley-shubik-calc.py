@@ -94,28 +94,38 @@ def ShapleyShubikFast(voters):
         votingPower.append([i + 1, voters[i], 0])
 
     permutations = list(itertools.permutations(players))
-
+    
     for j in range(len(permutations)):
-        print('New iteration: ', j)
+        # print('New iteration: ', j)
         # print(permutations)
         runningSum = 0
 
-        for i in range(0, numPlayers):
+        for i in range(numPlayers):
             # print("i: ",i)
+            # print(j,i,permutations[j])
             runningSum += permutations[j][i][1]
             # print(runningSum)
             if runningSum > quota:
-                votingPower[permutations[j][i][0] - 1][2] += 1
-
-                check = permutations[j][:i]
-
-                while j < len(permutations) -1:
-                    if permutations[j+1][:i] == check:
-                        votingPower[permutations[j][i][0] - 1][2] += 1
-                        j+=1
-                    else: 
-                        break
-                break
+                
+                numInconsequential = numPlayers - 1 - i 
+            
+                numInconsequentialFactorial = factorial(numInconsequential)
+                # print(i,j,permutations[j], numInconsequential)
+                votingPower[permutations[j][i][0] - 1][2] += numInconsequentialFactorial
+                
+                # j += numInconsequentialFactorial
+                # if j > len(permutations):
+                #     print(j, len(permutations))
+                #     j = len(permutations)
+                
+                # check = permutations[j][:i]                
+                # if permutations[j+1][:i] == check:
+                #     print('SECCOND')
+                #     votingPower[permutations[j][i][0] - 1][2] += 1
+                #     j+=1
+                # else: 
+                #     break
+                
     powerFractions = []
     for power in votingPower:
         powerFractions.append( str(Fraction(power[2], totalPivotal)))
@@ -145,10 +155,10 @@ def fixedPoint(power):
     else: 
         fixedPoint(new_list[0])
 
-# for i in range(10):
+# for i in range(1,2):
 #     print(i)
 #     test = [i, i+1, i+2,i+3,i+4,i+5,i+6, i+7, i+8]
-#     ShapleyShubik(test)
+#     ShapleyShubikFast(test)
 #     print("\n")
 # # 
 # test = [3,4,5]
