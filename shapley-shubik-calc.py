@@ -3,11 +3,10 @@ from fractions import Fraction
 from math import factorial
 import time
 
-q = 0
-
+iterations = 0
 def ShapleyShubikFast(voters):
 
-    start_time = time.time()
+    # start_time = time.time()
 
     numPlayers = len(voters)
     totalPivotal = factorial(numPlayers)
@@ -42,18 +41,13 @@ def ShapleyShubikFast(voters):
             # print("i: ",i)
             runningSum += permutations[j][i][1]
             # print(runningSum)
-            if runningSum > quota:
-                
+            if runningSum > quota:  
                 # print(j,i, quota, runningSum, permutations[j])
-
-                numInconsequential = numPlayers - 1 - i 
-            
-                numInconsequentialFactorial = factorial(numInconsequential)
-                
+                numInconsequential = numPlayers - 1 - i        
+                numInconsequentialFactorial = factorial(numInconsequential)               
                 votingPower[permutations[j][i][0] - 1][2] += numInconsequentialFactorial
 
-                # print(j,i, permutations[j], numInconsequential)
-                
+                # print(j,i, permutations[j], numInconsequential)               
                 j = j + numInconsequentialFactorial
                 break
         
@@ -67,16 +61,15 @@ def ShapleyShubikFast(voters):
         element.pop(0)
 
     # print("Final Power: ", votingPower)
-    runtime = (time.time() - start_time)
-    print("--- {:f} secconds ---".format(runtime))
+    # runtime = (time.time() - start_time)
+    # print("--- {:f} secconds ---".format(runtime))
 
     for i in range(numPlayers):
         votingPower[i] =  votingPower[i][1]
 
     return ([votingPower, powerFractions])
-def fixedPoint(power):
-    start_time = time.time()
-
+def fixedPoint(power, iterations):
+    # start_time = time.time()
     old_list = list(power)
     # print("Old:",  old_list)
     
@@ -86,16 +79,19 @@ def fixedPoint(power):
 
     if new_list[0] == old_list:
         print("FIXED POINT: ", new_list[1])
-        runtime = (time.time() - start_time)
-        print("+++ {:f} secconds +++".format(runtime))
+        print("Iterations: ", iterations)
+        # runtime = (time.time() - start_time)
+        # print("+++ {:f} secconds +++".format(runtime))
     else: 
-        fixedPoint(new_list[0])
+        fixedPoint(new_list[0], iterations + 1)
     
-
-for i in range(10,11):
-    print(i)
-    test = [i, i+1, i+2,i+3,i+4,i+5,i+6,i+7,i+8,i+9]
-    fixedPoint(test)
+num = 9
+for i in range(1, 30):
+    test = []
+    for j in range(num):
+        test.append(i + j)
+    print("Start: ",test)
+    fixedPoint(test,0)
     print("\n")
 
 
