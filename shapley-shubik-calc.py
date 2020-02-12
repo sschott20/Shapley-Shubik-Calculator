@@ -3,6 +3,103 @@ from fractions import Fraction
 from math import factorial
 import time
 
+q = 0
+
+def ShapleyShubikFast(voters):
+
+    start_time = time.time()
+
+    numPlayers = len(voters)
+    totalPivotal = factorial(numPlayers)
+    quota = 0
+    players = []
+    votingPower = []
+    # print("players: ", voters)
+    for voter in voters:
+        # print(voter, "  voters: ",voters)
+        quota += voter
+    if quota == 1:
+        quota /= 2
+    elif quota % 2 == 1:
+        quota = (quota / 2) + 1/2
+    else: 
+        quota = (quota / 2) 
+    # print("Quota: ", quota)
+
+    totalPower = 0
+    for i in range(0, numPlayers):
+        totalPower += voters[i]
+        players.append([i + 1, voters[i]])
+        votingPower.append([i + 1, voters[i], 0])
+
+    permutations = list(itertools.permutations(players))
+    j = 0
+    while j < len(permutations):
+        # print('New iteration: ', j)
+        # print(permutations)
+        runningSum = 0
+        for i in range(numPlayers):
+            # print("i: ",i)
+            runningSum += permutations[j][i][1]
+            # print(runningSum)
+            if runningSum > quota:
+                
+                # print(j,i, quota, runningSum, permutations[j])
+
+                numInconsequential = numPlayers - 1 - i 
+            
+                numInconsequentialFactorial = factorial(numInconsequential)
+                
+                votingPower[permutations[j][i][0] - 1][2] += numInconsequentialFactorial
+
+                # print(j,i, permutations[j], numInconsequential)
+                
+                j = j + numInconsequentialFactorial
+                break
+        
+                
+    powerFractions = []
+    for power in votingPower:
+        powerFractions.append( str(Fraction(power[2], totalPivotal)))
+        power[2] = power[2] / totalPivotal
+
+    for element in votingPower:
+        element.pop(0)
+
+    # print("Final Power: ", votingPower)
+    runtime = (time.time() - start_time)
+    print("--- {:f} secconds ---".format(runtime))
+
+    for i in range(numPlayers):
+        votingPower[i] =  votingPower[i][1]
+
+    return ([votingPower, powerFractions])
+def fixedPoint(power):
+    start_time = time.time()
+
+    old_list = list(power)
+    # print("Old:",  old_list)
+    
+    new_list = ShapleyShubikFast(power)
+    # print("New:",  new_list[0], new_list[1])
+    # print("\n")
+
+    if new_list[0] == old_list:
+        print("FIXED POINT: ", new_list[1])
+        runtime = (time.time() - start_time)
+        print("+++ {:f} secconds +++".format(runtime))
+    else: 
+        fixedPoint(new_list[0])
+    
+
+for i in range(10,11):
+    print(i)
+    test = [i, i+1, i+2,i+3,i+4,i+5,i+6,i+7,i+8,i+9]
+    fixedPoint(test)
+    print("\n")
+
+
+
 def ShapleyShubik(voters):
 
     start_time = time.time()
@@ -66,115 +163,3 @@ def ShapleyShubik(voters):
         votingPower[i] =  votingPower[i][1]
 
     return ([votingPower, powerFractions])
-def ShapleyShubikFast(voters):
-
-    start_time = time.time()
-
-    numPlayers = len(voters)
-    totalPivotal = factorial(numPlayers)
-    quota = 0
-    players = []
-    votingPower = []
-    # print("players: ", voters)
-    for voter in voters:
-        # print(voter, "  voters: ",voters)
-        quota += voter
-    if quota == 1:
-        quota /= 2
-    elif quota % 2 == 1:
-        quota = (quota / 2) + 1/2
-    else: 
-        quota = (quota / 2) 
-    # print("Quota: ", quota)
-
-    totalPower = 0
-    for i in range(0, numPlayers):
-        totalPower += voters[i]
-        players.append([i + 1, voters[i]])
-        votingPower.append([i + 1, voters[i], 0])
-
-    permutations = list(itertools.permutations(players))
-    
-    for j in range(len(permutations)):
-        # print('New iteration: ', j)
-        # print(permutations)
-        runningSum = 0
-        a = j
-        done = False
-        for i in range(numPlayers):
-            # print("i: ",i)
-            runningSum += permutations[j][i][1]
-            # print(runningSum)
-            if runningSum > quota:
-                # print(j,i, quota, runningSum, permutations[j])
-
-                numInconsequential = numPlayers - 1 - i 
-            
-                numInconsequentialFactorial = factorial(numInconsequential)
-                
-                votingPower[permutations[j][i][0] - 1][2] += numInconsequentialFactorial
-                a = j + numInconsequentialFactorial + 1
-                print(j,a,i, quota, runningSum, permutations[j], numInconsequential)
-                done = True
-            if done:
-                break
-        j = a
-                
-    powerFractions = []
-    for power in votingPower:
-        powerFractions.append( str(Fraction(power[2], totalPivotal)))
-        power[2] = power[2] / totalPivotal
-
-    for element in votingPower:
-        element.pop(0)
-
-    print("Final Power: ", votingPower)
-    runtime = (time.time() - start_time)
-    print("--- {:f} secconds ---".format(runtime))
-
-    for i in range(numPlayers):
-        votingPower[i] =  votingPower[i][1]
-
-    return ([votingPower, powerFractions])
-def fixedPoint(power):
-    old_list = list(power)
-    # print("Old:",  old_list)
-    
-    new_list = ShapleyShubik(power)
-    # print("New:",  new_list[0], new_list[1])
-    # print("\n")
-
-    if new_list[0] == old_list:
-        print("FIXED POINT: ", new_list[1])
-    else: 
-        fixedPoint(new_list[0])
-
-# for i in range(1,2):
-#     print(i)
-#     test = [i, i+1, i+2,i+3,i+4,i+5,i+6, i+7, i+8]
-#     ShapleyShubikFast(test)
-#     print("\n")
-# # 
-# test = [3,4,5]
-# fixedPoint(test)
-
-# def permutationTest(baseList):
-#     permutations = list(itertools.permutations(baseList))
-#     for j in range(len(permutations)):
-#         check = permutations[j][:4]
-#         if permutations[j+1][:4] == check:
-#             print(permutations[j]) 
-#             print(permutations[j+1])
-#             j+=1
-#             print("\n")
-# permutationTest([1,2,3,4,5,6,7])
-
-
-for i in range(2,3):
-    # print(i)
-    test = [i, i+1, i+2,i+3,i+4,i+5]
-    # ShapleyShubik(test)
-    ShapleyShubikFast(test)
-    print("\n")
-
-# permutationTest([1,2,3,4])
