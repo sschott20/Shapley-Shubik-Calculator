@@ -68,7 +68,8 @@ def ShapleyShubikFast(voters):
         votingPower[i] =  votingPower[i][1]
 
     return ([votingPower, powerFractions])
-def fixedPoint(power, iterations):
+
+def fixedPoint(power, iterations, StartNum):
     # start_time = time.time()
     old_list = list(power)
     # print("Old:",  old_list)
@@ -78,22 +79,58 @@ def fixedPoint(power, iterations):
     # print("\n")
 
     if new_list[0] == old_list:
-        print("FIXED POINT: ", new_list[1])
-        print("Iterations: ", iterations)
+        # print("FIXED POINT: ", new_list[1])
+        # print("Iterations: ", iterations)
+
+        return [StartNum, iterations, new_list[1]]
+
         # runtime = (time.time() - start_time)
         # print("+++ {:f} secconds +++".format(runtime))
     else: 
-        fixedPoint(new_list[0], iterations + 1)
+        return fixedPoint(new_list[0], iterations + 1, StartNum)
     
-num = 9
-for i in range(1, 30):
-    test = []
-    for j in range(num):
-        test.append(i + j)
-    print("Start: ",test)
-    fixedPoint(test,0)
-    print("\n")
+def main():
+    for num in range(2,9):
+        total_time = time.time()
+        filename = 'FixedPointData' + str(num) + '.txt'
+        DataFile = open(filename, 'a')
+        DataFile.truncate(0)
 
+        DataList = []
+        # DataListFinal = []
+        
+
+        for i in range(25):
+            start_time = time.time()
+            test = []
+            for j in range(num):
+                test.append(i + j)
+            # print("Start: ",test)
+
+            DataList.append(fixedPoint(test,0, i)) 
+
+            print("--- {:f} secconds ---".format(time.time() - start_time))
+            # print("data list: ", DataList)
+
+            # print("\n")
+
+        # for q in range(len(DataList)):
+        #     # print (q)
+        #     if q == len(DataList) - 1:
+        #         break
+        #     # if DataList[q - 1] != DataList[q]:
+        #     DataListFinal.append(DataList[q])
+
+        for data in DataList:
+            for element in data:
+                DataFile.write(str(element))
+                DataFile.write(', ')
+            DataFile.write('\n')
+        print("--- TOTAL TIME ---")
+        print("--- {:f} secconds ---".format(time.time() - total_time))
+
+if __name__ == "__main__": 
+    main()
 
 
 def ShapleyShubik(voters):
