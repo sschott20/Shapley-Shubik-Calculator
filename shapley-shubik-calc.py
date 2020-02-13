@@ -60,7 +60,7 @@ def ShapleyShubikFast(voters):
     for element in votingPower:
         element.pop(0)
 
-    # print("Final Power: ", votingPower)
+    print("Final Power: ", votingPower)
     # runtime = (time.time() - start_time)
     # print("--- {:f} secconds ---".format(runtime))
 
@@ -90,17 +90,20 @@ def fixedPoint(power, iterations, StartNum):
         return fixedPoint(new_list[0], iterations + 1, StartNum)
     
 def main():
-    for num in range(2,9):
+    
+    for num in range(2,10):
         total_time = time.time()
         filename = 'FixedPointData' + str(num) + '.txt'
         DataFile = open(filename, 'a')
-        DataFile.truncate(0)
+        # DataFile.truncate(0)
 
         DataList = []
         # DataListFinal = []
         
-
-        for i in range(25):
+        ShapleyShubikFast([20,21,22,23,24,25,26,27,28,29])
+        print("10 voters: ",time.time() - total_time)
+        break
+        for i in range(50):
             start_time = time.time()
             test = []
             for j in range(num):
@@ -126,8 +129,11 @@ def main():
                 DataFile.write(str(element))
                 DataFile.write(', ')
             DataFile.write('\n')
+        print('\n')
+        print('--- NUM: {:f} ---'.format(num))
         print("--- TOTAL TIME ---")
         print("--- {:f} secconds ---".format(time.time() - total_time))
+        print('\n')
 
 if __name__ == "__main__": 
     main()
