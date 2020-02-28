@@ -17,7 +17,7 @@ def main():
     quota = 0    
     
     DataList = []
-
+    # print('aya: ', pi.compute_ssi(2,[1,2]))
     for num in range(3, 20, 2):
         total_time = time.time()
         filename = 'SSoneIter' + str(num) + '.txt'

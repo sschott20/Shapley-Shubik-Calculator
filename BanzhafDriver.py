@@ -11,24 +11,23 @@ iterations = 0
 def main():
     test = []
     start = 3
-    amax = 100
+    amax = 1000
+    limit = 50
     quota = 0    
     
     DataList = []
     FirstConverge = []
-    for num in range(3, 20, 2):
+    total_time = time.time()
+    for num in range(3, limit, 2):
         converged = False
-        total_time = time.time()
+        start_time = time.time()
         filename = 'BanOneIter' + str(num) + '.txt'
-        # filename = "test.txt"
-        # print ('lets get litty with it')
+        
         DataFile = open(filename, 'a')
         DataFile.truncate(0)
-        # DataFile.truncate(0)
         DataList = []
-        # DataListFinal = []
+
         for i in range(amax):
-            start_time = time.time()
             test = []
             quota = 0
             for j in range(num):
@@ -41,34 +40,46 @@ def main():
                 quota = (quota / 2) + 1/2
             else: 
                 quota = (quota / 2)
+
             pbi = compute_pbi(int(quota), test)
             cumsum = pbi[1]
             pbi = pbi[0]
             final = []
-            print(pbi)
+
             if pbi[0]/cumsum == 1/num and converged == False:
-                print('converge:', num, i)
+                # print('converge:', num, i)
                 FirstConverge.append([num, i])
+                converged = True
+                
             for i in pbi:
                 final.append(str(Fraction(i, cumsum)))
             # print(final)
             DataList.append(final)
+            if converged == True:
+                break
             
         # unit = '1/' + str(num)
 
         for data in DataList:
-            # for i in range(len(data)):
-            #     data[i] = Fraction(data[0], data[1])
-
             DataFile.write(str(data))
             DataFile.write('\n')
 
         print('\n')
         print('--- LENGTH: {:d} ---'.format(num))
         # print('--- CONVERGE: {:d} ---'.format(FlipDex))
-        print("--- TOTAL TIME: {:f} secconds ---".format(time.time() - total_time))
+        print("--- TIME: {:f} secconds ---".format(time.time() - start_time))
         print('\n')
-    print('First Converge: ', FirstConverge)
+
+    ConvergeFile = open('BanConvergence.txt', 'a')
+    ConvergeFile.truncate(0)
+    for i in FirstConverge:
+        t = str(i[0]) + ' : ' + str(i[1])
+        ConvergeFile.write(t)
+        ConvergeFile.write('\n')
+    
+    print('\n')
+    print("--- TOTAL TIME: {:f} secconds ---".format(time.time() - total_time))
+    print('\n')
     # print ('Mebrary: ', compute_ssi(int(quota), test)[0][0])
     # print('power index: ', PowerIndex)
     # PowerFractions = []
