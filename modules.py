@@ -130,6 +130,7 @@ def compute_pbi(quota,weights,minimalWinningCoalitionSize=1):
         >>> computePBI(8,[4,4,3,2,1,1])
         [0.5, 0.5, 0.375, 0.125, 0.125, 0.125]
     ''' 
+    
     n = len(weights)
     Wsum = sum(weights)    
     for i in range(n):
@@ -137,26 +138,21 @@ def compute_pbi(quota,weights,minimalWinningCoalitionSize=1):
             oldweigth_i = weights[i]
             weights[i] = Wsum - quota + 1
             quota = quota - oldweigth_i + weights[i]
-    PBIfactor = 1/2**(n-1)
     PBIs = []
-    if minimalWinningCoalitionSize==1:
-        C = number_coalitions_weighting_x(quota,weights)
-        for i in range(n):
-            Cwith_i = number_coalitions_weighting_x_including_i(quota,weights,C,i)        
-            PBI = np.sum(Cwith_i[quota:quota+weights[i]])*PBIfactor  
-            PBIs.append(PBI) 
-    else: 
-        C = number_coalitions_weighting_x_having_size_s(quota,weights)
-        for i in range(n):
-            Cwith_i = number_coalitions_weighting_x_having_size_s_including_i(quota,weights,C,i)
-            w_i = weights[i]
-            PBI = 0
-            for s in range(minimalWinningCoalitionSize-1,n):
-                    PBI += Cwith_i[quota:quota+w_i,s+1].sum(axis=0)            
-            PBI += Cwith_i[quota+w_i:Wsum+1,minimalWinningCoalitionSize].sum(axis=0)
-            PBI *=PBIfactor
-            PBIs.append(PBI) 
-    return PBIs
+    C = number_coalitions_weighting_x(quota,weights)
+    for i in range(n):
+        Cwith_i = number_coalitions_weighting_x_including_i(quota,weights,C,i)        
+        # PBI = np.sum(Cwith_i[quota:quota+weights[i]])*PBIfactor  
+        PBI = np.sum(Cwith_i[quota:quota+weights[i]])  
+        PBIs.append(PBI) 
+    cumsum = 0
+    for voter in PBIs: 
+        cumsum += voter
+    # for i in range(len(PBIs)):
+        # PBIs[i] = Fraction(PBIs[i], cumsum)
+        # print(PBIs[i])
+
+    return PBIs, cumsum
 
 
 def compute_ssi(quota,weights,minimalWinningCoalitionSize=1):
@@ -175,11 +171,9 @@ def compute_ssi(quota,weights,minimalWinningCoalitionSize=1):
         t = fac(s)*fac(n-s-1)
         divisor = gcd(t, facn)
         SSIfactors.append([int(t / divisor), int(facn/divisor)])
-    LeastCommon = 1
 
-    for factor in SSIfactors: 
-        LeastCommon = np.lcm(factor, LeastCommon)    
-    print (LeastCommon)
+    print(SSIfactors)
+    # print ('lcm: ',LeastCommon)
     # print(SSIfactors)
     # print('SSIfactors2: ',SSIfactors2)
     SSI = [Fraction(0)]*n
@@ -195,7 +189,7 @@ def compute_ssi(quota,weights,minimalWinningCoalitionSize=1):
 
             SSI[i] +=  SSIfactors[s][0] * t / SSIfactors[s][1]
 
-    print ('SSI: ',SSI)
+    # print ('SSI: ',SSI)
 
     return SSI, SSIfactors
 
