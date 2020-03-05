@@ -9,27 +9,27 @@ from modules import compute_pbi
 iterations = 0
 
 def main():
+
     test = []
     start = 3
-    amax = 1000
-    limit = 50
+    amax = 200
+    limit = 25
     quota = 0    
     
     DataList = []
     FirstConverge = []
     total_time = time.time()
-    print(compute_pbi(95, [17,18,19,20,21,22,23,24,25]))
-    quit()
-    for num in range(3, limit, 2):
+    
+    for num in range(2, limit, 2):
         converged = False
         start_time = time.time()
-        filename = 'BanOneIter' + str(num) + '.txt'
+        filename = 'BanEvenOneIterFrac' + str(num) + '.txt'
         
         DataFile = open(filename, 'a')
         DataFile.truncate(0)
         DataList = []
 
-        for i in range(amax):
+        for i in range(1,amax):
             test = []
             quota = 0
             for j in range(num):
@@ -48,18 +48,20 @@ def main():
             cumsum = pbi[1]
             pbi = pbi[0]
             final = []
-
-            if pbi[0]/cumsum == 1/num and converged == False:
-                # print('converge:', num, i)
-                FirstConverge.append([num, i + 1])
-                converged = True
+            if i == amax - 1:
+                FirstConverge.append(str(cumsum) + str(pbi) )
+           # if pbi[0]/cumsum == 1/num and converged == False:
+            #     # print('converge:', num, i)
+            #     FirstConverge.append([num, i + 1])
+            #     converged = True
                 
             for i in pbi:
                 final.append(str(Fraction(i, cumsum)))
+            # final.append(str(cumsum) + str(pbi))
             # print(final)
             DataList.append(final)
-            if converged == True:
-                break
+            # if converged == True:
+                # break
             
         # unit = '1/' + str(num)
 
@@ -73,22 +75,16 @@ def main():
         print("--- TIME: {:f} secconds ---".format(time.time() - start_time))
         print('\n')
 
-    ConvergeFile = open('BanConvergence.txt', 'a')
+    ConvergeFile = open('EvenBanConverge.txt', 'a')
     ConvergeFile.truncate(0)
     for i in FirstConverge:
-        t = str(i[0]) + ' : ' + str(i[1])
-        ConvergeFile.write(t)
+        ConvergeFile.write(str(i))
         ConvergeFile.write('\n')
     
     print('\n')
     print("--- TOTAL TIME: {:f} secconds ---".format(time.time() - total_time))
     print('\n')
-    # print ('Mebrary: ', compute_ssi(int(quota), test)[0][0])
-    # print('power index: ', PowerIndex)
-    # PowerFractions = []
-    # for i in PowerIndex[1]:
-    #     PowerFractions.append(str(Fraction(i[0],i[1])))
-    # print ('power fractions: ', PowerFractions)
+
 
 if __name__ == "__main__": 
     main()
