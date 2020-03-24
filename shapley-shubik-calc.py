@@ -1,9 +1,11 @@
 import itertools
-from fractions import Fraction 
+from fractions import Fraction
 from math import factorial
 import time
 
 iterations = 0
+
+
 def ShapleyShubikFast(voters):
 
     # start_time = time.time()
@@ -20,9 +22,9 @@ def ShapleyShubikFast(voters):
     if quota == 1:
         quota /= 2
     elif quota % 2 == 1:
-        quota = (quota / 2) + 1/2
-    else: 
-        quota = (quota / 2) 
+        quota = (quota / 2) + 1 / 2
+    else:
+        quota = quota / 2
     # print("Quota: ", quota)
 
     totalPower = 0
@@ -41,20 +43,19 @@ def ShapleyShubikFast(voters):
             # print("i: ",i)
             runningSum += permutations[j][i][1]
             # print(runningSum)
-            if runningSum > quota:  
+            if runningSum > quota:
                 # print(j,i, quota, runningSum, permutations[j])
-                numInconsequential = numPlayers - 1 - i        
-                numInconsequentialFactorial = factorial(numInconsequential)               
+                numInconsequential = numPlayers - 1 - i
+                numInconsequentialFactorial = factorial(numInconsequential)
                 votingPower[permutations[j][i][0] - 1][2] += numInconsequentialFactorial
 
-                # print(j,i, permutations[j], numInconsequential)               
+                # print(j,i, permutations[j], numInconsequential)
                 j = j + numInconsequentialFactorial
                 break
-        
-                
+
     powerFractions = []
     for power in votingPower:
-        powerFractions.append( str(Fraction(power[2], totalPivotal)))
+        powerFractions.append(str(Fraction(power[2], totalPivotal)))
         power[2] = power[2] / totalPivotal
 
     for element in votingPower:
@@ -65,15 +66,16 @@ def ShapleyShubikFast(voters):
     # print("--- {:f} secconds ---".format(runtime))
 
     for i in range(numPlayers):
-        votingPower[i] =  votingPower[i][1]
+        votingPower[i] = votingPower[i][1]
 
-    return ([votingPower, powerFractions])
+    return [votingPower, powerFractions]
+
 
 def fixedPoint(power, iterations, StartNum):
     # start_time = time.time()
     old_list = list(power)
     # print("Old:",  old_list)
-    
+
     new_list = ShapleyShubikFast(power)
     # print("New:",  new_list[0], new_list[1])
     # print("\n")
@@ -86,22 +88,23 @@ def fixedPoint(power, iterations, StartNum):
 
         # runtime = (time.time() - start_time)
         # print("+++ {:f} secconds +++".format(runtime))
-    else: 
+    else:
         return fixedPoint(new_list[0], iterations + 1, StartNum)
-    
+
+
 def main():
-    
-    for num in range(2,10):
+
+    for num in range(2, 10):
         total_time = time.time()
-        filename = 'FixedPointData' + str(num) + '.txt'
-        DataFile = open(filename, 'a')
+        filename = "FixedPointData" + str(num) + ".txt"
+        DataFile = open(filename, "a")
         # DataFile.truncate(0)
 
         DataList = []
         # DataListFinal = []
-        
-        ShapleyShubikFast([20,21,22,23,24,25,26,27,28,29])
-        print("10 voters: ",time.time() - total_time)
+
+        ShapleyShubikFast([20, 21, 22, 23, 24, 25, 26, 27, 28, 29])
+        print("10 voters: ", time.time() - total_time)
         break
         for i in range(50):
             start_time = time.time()
@@ -110,7 +113,7 @@ def main():
                 test.append(i + j)
             # print("Start: ",test)
 
-            DataList.append(fixedPoint(test,0, i)) 
+            DataList.append(fixedPoint(test, 0, i))
 
             print("--- {:f} secconds ---".format(time.time() - start_time))
             # print("data list: ", DataList)
@@ -127,15 +130,16 @@ def main():
         for data in DataList:
             for element in data:
                 DataFile.write(str(element))
-                DataFile.write(', ')
-            DataFile.write('\n')
-        print('\n')
-        print('--- NUM: {:f} ---'.format(num))
+                DataFile.write(", ")
+            DataFile.write("\n")
+        print("\n")
+        print("--- NUM: {:f} ---".format(num))
         print("--- TOTAL TIME ---")
         print("--- {:f} secconds ---".format(time.time() - total_time))
-        print('\n')
+        print("\n")
 
-if __name__ == "__main__": 
+
+if __name__ == "__main__":
     main()
 
 
@@ -155,9 +159,9 @@ def ShapleyShubik(voters):
     if quota == 1:
         quota /= 2
     elif quota % 2 == 1:
-        quota = (quota / 2) + 1/2
-    else: 
-        quota = (quota / 2) 
+        quota = (quota / 2) + 1 / 2
+    else:
+        quota = quota / 2
     # print("Quota: ", quota)
 
     totalPower = 0
@@ -176,7 +180,7 @@ def ShapleyShubik(voters):
         # print(permutation)
         runningSum = 0
         # print(permutation)
-        for i in range(0,numPlayers):
+        for i in range(0, numPlayers):
             # print("i: ",i)
             runningSum += permutation[i][1]
             # print(runningSum)
@@ -186,7 +190,7 @@ def ShapleyShubik(voters):
                 break
     powerFractions = []
     for power in votingPower:
-        powerFractions.append( str(Fraction(power[2], totalPivotal)))
+        powerFractions.append(str(Fraction(power[2], totalPivotal)))
         power[2] = power[2] / totalPivotal
 
     for element in votingPower:
@@ -194,11 +198,10 @@ def ShapleyShubik(voters):
 
     print("Final Power: ", votingPower)
 
-
-    runtime = (time.time() - start_time)
+    runtime = time.time() - start_time
     print("--- {:f} secconds ---".format(runtime))
 
     for i in range(numPlayers):
-        votingPower[i] =  votingPower[i][1]
+        votingPower[i] = votingPower[i][1]
 
-    return ([votingPower, powerFractions])
+    return [votingPower, powerFractions]

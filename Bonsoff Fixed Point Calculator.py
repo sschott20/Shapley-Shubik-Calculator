@@ -2,11 +2,13 @@ import math
 import itertools
 from collections import Counter
 
+
 def summer(tuple):
     total = 0
     for i in tuple:
         total += i
     return total
+
 
 voters = [1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2]
 iterations = 0
@@ -20,13 +22,11 @@ while True:
     winners = []
     coalitions = []
     if iterations == 0:
-        quota = sum(voters)/2
+        quota = sum(voters) / 2
     else:
         quota = 0.5
 
-
-
-    for L in range(0, len(voters)+1):
+    for L in range(0, len(voters) + 1):
         for subset in itertools.combinations(voters, L):
             coalitions.append(subset)
 
@@ -51,17 +51,17 @@ while True:
     for i in repeats:
         if repeats[i] > 1:
             for j in range(0, repeats[i]):
-                voters.append((okay[i] / repeats[i])/len(proportions))
-                #print(((okay[i] / repeats[i])/len(proportions)))
+                voters.append((okay[i] / repeats[i]) / len(proportions))
+                # print(((okay[i] / repeats[i])/len(proportions)))
         else:
-            voters.append(okay[i]/ len(proportions))
-            #print(okay[i]/ len(proportions))
+            voters.append(okay[i] / len(proportions))
+            # print(okay[i]/ len(proportions))
 
-    #print(winners)
-    #print(proportions)
-    #print(voters)
-    #print(oldVoters)
-    iterations += 1;
+    # print(winners)
+    # print(proportions)
+    # print(voters)
+    # print(oldVoters)
+    iterations += 1
 
     if voters == oldVoters:
         print(voters)
